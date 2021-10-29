@@ -1,14 +1,21 @@
 package br.com.dio.app.repositories.data.repositories
 
+import android.os.RemoteException
 import br.com.dio.app.repositories.data.services.GitHubService
 import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
 
 class RepoRepositoryIMPL(private val service: GitHubService) : RepoRepository {
 
 
     override suspend fun listRepositories(user: String)= flow {
-       val repoList =  service.listRepositories(user)
-        emit(repoList)
+       try {
+           val repoList =  service.listRepositories(user)
+           emit(repoList)
+       }catch (ex: HttpException){
+         throw RemoteException(ex.message ?: "!! Não foi Possivel Realizar a Busca no Momento !!")
+       }
+
     }
 
 }
